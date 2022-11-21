@@ -27,5 +27,38 @@ function onDeviceReady() {
 
     // Cordova is now initialized. Have fun!
 
+    //Geolocation paramaters
+    var geoOpts ={
+        enableHighAccuracy: true //use satellite accuracy rather than network which is default
+    }
+    //get the location as soon as app loads
+    navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOpts);
+
+    function geoSuccess(position){
+        console.log(position)
+        var lat= position.coords.latitude
+        var long=position.coords.longitude
+        $("#currentPos").html(lat + "," + long)
+    }
+    function geoError(message){
+        alert(message.message)
+    }
+
+    var watchID;
+
+    $("#startWatch").on('click', function(){
+       watchID= navigator.geolocation.watchPosition(geoSuccess, geoError, geoOpts)
+       $(this).hide();
+       $("#stopWatch").show()
+    })
+
+    $("#stopWatch").on('click', function(){
+        navigator.geolocation.clearWatch(watchID)
+        $(this).hide();
+       $("#startWatch").show()
+    })
+
+  
+
 
 }
