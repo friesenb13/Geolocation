@@ -18,7 +18,11 @@ var mainView = app.views.create('.view-main')
 var $$ = Dom7;
 $$(document).on('page:init', '.page[data-name="page2"]', function () {
     // Page 2 fun here
+    var map = new google.maps.Map(document.getElementById('map'),{
 
+        zoom: 14,
+        center: {}
+    })
 })
 
 document.addEventListener('deviceready', onDeviceReady, false);
@@ -57,8 +61,6 @@ function onDeviceReady() {
         $(this).hide();
        $("#startWatch").show()
     })
-
-  
 
 
 }
