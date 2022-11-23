@@ -16,42 +16,29 @@ var app = new Framework7({
 var mainView = app.views.create('.view-main')
 
 var $$ = Dom7;
+var lat;
+var long;
+var map;
+var marker;
+var geoOpts ={
+    enableHighAccuracy: true 
+}
+
 $$(document).on('page:init', '.page[data-name="page2"]', function () {
     // Page 2 fun here
-    var map = new google.maps.Map(document.getElementById('map'),{
+     map = new google.maps.Map(document.getElementById('map'),{
 
-        zoom: 14,
-        center: {}
+        zoom: 18,
+        center: {lat: lat, lng: long}
     })
-})
-
-document.addEventListener('deviceready', onDeviceReady, false);
-
-function onDeviceReady() {
-
-    // Cordova is now initialized. Have fun!
-
-    //Geolocation paramaters
-    var geoOpts ={
-        enableHighAccuracy: true //use satellite accuracy rather than network which is default
-    }
-    //get the location as soon as app loads
-    navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOpts);
-
-    function geoSuccess(position){
-        console.log(position)
-        var lat= position.coords.latitude
-        var long=position.coords.longitude
-        $("#currentPos").html(lat + "," + long)
-    }
-    function geoError(message){
-        alert(message.message)
-    }
-
+     marker = new google.maps.Marker({
+        position: {lat: lat, lng: long},
+        map: map
+    })
     var watchID;
 
     $("#startWatch").on('click', function(){
-       watchID= navigator.geolocation.watchPosition(geoSuccess, geoError, geoOpts)
+       watchID= navigator.geolocation.watchPosition(watchSuccess, geoError, geoOpts)
        $(this).hide();
        $("#stopWatch").show()
     })
@@ -61,6 +48,42 @@ function onDeviceReady() {
         $(this).hide();
        $("#startWatch").show()
     })
+    function watchSuccess(position){
+        console.log(position)
+        lat= position.coords.latitude
+        long=position.coords.longitude
+    
+        var coords = {lat: lat, lng: long}
+        map.setCenter(coords);
+        marker.setPosition(coords);
+        // $("#currentPos").html(lat + "," + long)
+    }
+})
+
+document.addEventListener('deviceready', onDeviceReady, false);
+
+function onDeviceReady() {
+
+    // Cordova is now initialized. Have fun!
+
+    //Geolocation paramaters
+    
+    //get the location as soon as app loads
+    // navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOpts);
 
 
+}
+
+function geoSuccess(position){
+    console.log(position)
+    lat= position.coords.latitude
+    long=position.coords.longitude
+
+    var coords = {lat: lat, lng: long}
+    map.setCenter(coords);
+    marker.setPosition(coords);
+    // $("#currentPos").html(lat + "," + long)
+}
+function geoError(message){
+    alert(message.message)
 }
